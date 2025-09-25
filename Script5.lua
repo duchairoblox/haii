@@ -89,7 +89,7 @@ AddButton(TabBF, {
 AddButton(TabBF, {
     Name = "Fix Lag",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/TurboLite/Script/main/FixLag.lua"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/LuaCrack/Min/refs/heads/main/MinXt2Vn"))()
     end
 })
 
