@@ -16,7 +16,7 @@ local savedKey = nil
 local Window = MakeWindow({
     Hub = {
         Title = "Hải Roblox",
-        Animation = "Youtube: Trung IOS"
+        Animation = "YT: Trung IOS"
     },
     Key = {
         KeySystem = true,
@@ -69,7 +69,7 @@ AddButton(TabInfo, {
 local TabBF = MakeTab({Name = "Blox Fruits"})
 
 AddButton(TabBF, {
-    Name = "Redz Hub",
+    Name = "Redz Hub ( Chưa Sẵn Sàng )",
     Callback = function()
         local Settings = {
             JoinTeam = "Pirates", -- hoặc Marines
@@ -87,7 +87,7 @@ AddButton(TabBF, {
 })
 
 AddButton(TabBF, {
-    Name = "Fix Lag",
+    Name = "Min ( Tiếng Việt )",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/LuaCrack/Min/refs/heads/main/MinXt2Vn"))()
     end
