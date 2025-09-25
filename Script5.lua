@@ -1,4 +1,4 @@
---// Load UI Lib
+-- Lib giao diện
 local success, UiLib = pcall(function()
     return loadstring(game:HttpGet("https://raw.githubusercontent.com/daucobonhi/Ui-Redz-V2/refs/heads/main/UiREDzV2.lua"))()
 end)
@@ -7,55 +7,21 @@ if not success then
     return
 end
 
---// Cấu hình Key
-local VALID_KEYS = {"9997"}  -- key hôm nay
+-- Cấu hình key
+local VALID_KEYS = {"4869"}
 local KEY_LINK = "https://yeumoney.com/Exrfa"
-local STORAGE_NAME = "HaiRoblox_KeySystem"
+local savedKey = nil
 
--- Lấy thời gian hiện tại
-local function getTime()
-    return os.time()
-end
-
--- Tính thời điểm reset (6h sáng hôm nay)
-local function getResetTime()
-    local now = os.date("!*t", getTime())
-    now.hour, now.min, now.sec = 6, 0, 0
-    return os.time(now)
-end
-
--- Lấy key lưu trong 24h
-local savedData = nil
-pcall(function()
-    if isfile(STORAGE_NAME) then
-        savedData = game:GetService("HttpService"):JSONDecode(readfile(STORAGE_NAME))
-    end
-end)
-
-local function isSavedKeyValid()
-    if not savedData then return false end
-    if savedData.Key and table.find(VALID_KEYS, savedData.Key) then
-        -- Nếu key nhập trước 6h hôm nay thì vẫn hợp lệ
-        if savedData.Expire and getTime() < savedData.Expire then
-            return true
-        end
-    end
-    return false
-end
-
--- Nếu key hợp lệ, bỏ qua nhập lại
-local useSavedKey = isSavedKeyValid()
-
---// Tạo cửa sổ chính
+-- Tạo cửa sổ chính
 local Window = MakeWindow({
     Hub = {
         Title = "Hải Roblox",
         Animation = "YT: Trung IOS"
     },
     Key = {
-        KeySystem = not useSavedKey,
-        Title = "Key System",
-        Description = "Key reset lúc 6h sáng mỗi ngày",
+        KeySystem = true,
+        Title = "Thông Báo",
+        Description = "Lấy Key Xong Phải Lưu Lại Khi Đăng Nhập Sẽ Bắt Nhập Lại Key",
         KeyLink = KEY_LINK,
         Keys = VALID_KEYS,
         Notifi = {
@@ -67,30 +33,10 @@ local Window = MakeWindow({
     }
 })
 
--- Nếu nhập đúng key -> lưu lại 24h hoặc đến 6h sáng
-if not useSavedKey then
-    hookfunction(Window.CheckKey, function(self, key)
-        local ok = table.find(VALID_KEYS, key)
-        if ok then
-            local expireTime = getResetTime()
-            if getTime() >= expireTime then
-                -- Nếu đã qua 6h hôm nay thì tính đến 6h ngày mai
-                expireTime = expireTime + 24 * 60 * 60
-            end
-            local data = {
-                Key = key,
-                Expire = expireTime
-            }
-            writefile(STORAGE_NAME, game:GetService("HttpService"):JSONEncode(data))
-        end
-        return ok
-    end)
-end
-
---// Đổi màu toàn bộ UI sang tím
+-- Đổi màu toàn bộ UI sang tím
 getgenv().UiColor = Color3.fromRGB(170, 0, 255)
 
---// Nút thu nhỏ
+-- Nút thu nhỏ
 MinimizeButton({
     Image = "http://www.roblox.com/asset/?id=83190276951914",
     Size = {60, 60},
@@ -146,5 +92,3 @@ AddButton(TabBF, {
         loadstring(game:HttpGet("https://raw.githubusercontent.com/LuaCrack/Min/refs/heads/main/MinXt2Vn"))()
     end
 })
-
-print("Hải Roblox GUI đã load thành công!")
