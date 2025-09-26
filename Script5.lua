@@ -38,7 +38,7 @@ getgenv().UiColor = Color3.fromRGB(170, 0, 255)
 
 -- Nút thu nhỏ
 MinimizeButton({
-    Image = "http://www.roblox.com/asset/?id=83190276951914",
+    Image = "https://anhsieuviet.com/image/atxniO",
     Size = {60, 60},
     Color = Color3.fromRGB(60, 0, 100),
     Corner = true,
