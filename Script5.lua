@@ -34,16 +34,16 @@ local Window = MakeWindow({
 })
 
 -- Đổi màu toàn bộ UI sang tím
-getgenv().UiColor = Color3.fromRGB(170, 0, 255)
+getgenv().UiColor = Color3.fromRGB(255, 255, 255)
 
 -- Nút thu nhỏ
 MinimizeButton({
     Image = "https://anhsieuviet.com/image/atxniO",
     Size = {60, 60},
-    Color = Color3.fromRGB(60, 0, 100),
+    Color = Color3.fromRGB(255, 255, 255),
     Corner = true,
     Stroke = false,
-    StrokeColor = Color3.fromRGB(200, 0, 255)
+    StrokeColor = Color3.fromRGB(255, 255, 255)
 })
 
 ------ Tab 1: Thông Tin ------
