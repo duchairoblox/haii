@@ -92,10 +92,3 @@ AddButton(TabBF, {
         loadstring(game:HttpGet("https://raw.githubusercontent.com/LuaCrack/Min/refs/heads/main/MinXt2Vn"))()
     end
 })
-
-AddButton(TabBF, {
-    Name = "Nexor Hub",
-    Callback = function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/NexorHub/Games/refs/heads/main/Universal/Scripts.lua "))()
-    end
-})
