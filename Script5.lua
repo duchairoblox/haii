@@ -8,7 +8,7 @@ if not success then
 end
 
 -- Cấu hình key
-local VALID_KEYS = {"4869"}
+local VALID_KEYS = {"duchai"}
 local KEY_LINK = "https://yeumoney.com/Exrfa"
 local savedKey = nil
 
