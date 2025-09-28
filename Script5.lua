@@ -9,9 +9,10 @@ end
 
 local HttpService = game:GetService("HttpService")
 
--- === CONFIG (1 dòng API YeuMoney gộp luôn token + web) ===
-local YEUMONEY_API = "https://yeumoney.com/QL_api.php?token=4a0ccb3738d1cf7b3660cbe52a249d13fd4d21e1c4f871f7a1567e28b9c14832&url=https://duchairoblox.github.io/Webkey/?ma="
--- =========================================================
+-- === CONFIG (YeuMoney API 1 dòng + format=text) ===
+local YEUMONEY_API = "https://yeumoney.com/QL_api.php?token=4a0ccb3738d1cf7b3660cbe52a249d13fd4d21e1c4f871f7a1567e28b9c14832&format=text&url="
+local WEB_SHOW_KEY = "https://duchairoblox.github.io/Webkey/"
+-- ==================================================
 
 -- Sinh key 7 số theo ngày (reset 00h VN)
 local function generateDailyKey()
@@ -26,25 +27,30 @@ local function generateDailyKey()
     return key, dateStr
 end
 
--- Gọi API YeuMoney (1 dòng url)
+-- Gọi API YeuMoney
 local function shortenWithYeuMoney(key)
-    local apiUrl = YEUMONEY_API .. tostring(key)
+    local target = WEB_SHOW_KEY .. "?ma=" .. key
+    local apiUrl = YEUMONEY_API .. HttpService:UrlEncode(target)
     local ok, res = pcall(function()
         return HttpService:GetAsync(apiUrl, true)
     end)
-    if ok and res and res:match("^https?://") then
-        return res
+    if ok then
+        local link = tostring(res):gsub("%s+","")
+        if link:match("^https?://") then
+            return link
+        end
+        warn("[YeuMoney] API không trả link hợp lệ:", res)
     else
-        warn("[YeuMoney] API fail:", res)
-        return "https://duchairoblox.github.io/Webkey/?ma=" .. tostring(key)
+        warn("[YeuMoney] HTTP lỗi:", res)
     end
+    return target -- fallback
 end
 
 -- Biến toàn cục
 local TODAY_KEY, TODAY_DATE, SHORT_LINK
 local VALID_KEYS = {}
 
--- Cập nhật key + short link
+-- Cập nhật key + link
 local function updateKey(force)
     local newKey, newDate = generateDailyKey()
     if force or TODAY_DATE ~= newDate then
@@ -59,7 +65,7 @@ end
 -- Khởi tạo lần đầu
 updateKey(true)
 
--- Auto refresh key mỗi 60s để bắt mốc 00h
+-- Auto refresh key sau 00h mỗi ngày
 task.spawn(function()
     while task.wait(60) do
         updateKey(false)
