@@ -9,10 +9,9 @@ end
 
 local HttpService = game:GetService("HttpService")
 
--- === CONFIG ===
-local LINK4M_API = "https://link4m.co/st?api=68d8dcd0c12fb80f470dc5dc&url="
-local WEB_SHOW_KEY = "https://duchairoblox.github.io/Webkey/"
--- ==============
+-- === CONFIG (1 dòng API YeuMoney gộp luôn token + web) ===
+local YEUMONEY_API = "https://yeumoney.com/QL_api.php?token=4a0ccb3738d1cf7b3660cbe52a249d13fd4d21e1c4f871f7a1567e28b9c14832&url=https://duchairoblox.github.io/Webkey/?ma="
+-- =========================================================
 
 -- Sinh key 7 số theo ngày (reset 00h VN)
 local function generateDailyKey()
@@ -27,28 +26,17 @@ local function generateDailyKey()
     return key, dateStr
 end
 
--- Xây link gốc hiển thị key
-local function buildTargetUrl(key)
-    return WEB_SHOW_KEY .. "?ma=" .. tostring(key)
-end
-
--- Rút gọn link qua Link4m
-local function shortenLink(key)
-    local targetUrl = buildTargetUrl(key)
-    local apiUrl = LINK4M_API .. HttpService:UrlEncode(targetUrl)
+-- Gọi API YeuMoney (1 dòng url)
+local function shortenWithYeuMoney(key)
+    local apiUrl = YEUMONEY_API .. tostring(key)
     local ok, res = pcall(function()
         return HttpService:GetAsync(apiUrl, true)
     end)
-    if not ok then
-        warn("[Link4m] HTTP lỗi:", res)
-        return nil
-    end
-    local body = tostring(res)
-    if body:match("^https?://") then
-        return body -- short link
+    if ok and res and res:match("^https?://") then
+        return res
     else
-        warn("[Link4m] API trả về không phải link:", body)
-        return nil
+        warn("[YeuMoney] API fail:", res)
+        return "https://duchairoblox.github.io/Webkey/?ma=" .. tostring(key)
     end
 end
 
@@ -56,27 +44,22 @@ end
 local TODAY_KEY, TODAY_DATE, SHORT_LINK
 local VALID_KEYS = {}
 
--- Hàm cập nhật key + link
+-- Cập nhật key + short link
 local function updateKey(force)
     local newKey, newDate = generateDailyKey()
     if force or TODAY_DATE ~= newDate then
         TODAY_KEY, TODAY_DATE = newKey, newDate
         VALID_KEYS = {TODAY_KEY}
-        local short = shortenLink(TODAY_KEY)
-        if short then
-            SHORT_LINK = short
-        else
-            SHORT_LINK = buildTargetUrl(TODAY_KEY)
-        end
-        warn("Key hôm nay (" .. TODAY_DATE .. "): " .. TODAY_KEY)
-        warn("Link key: " .. SHORT_LINK)
+        SHORT_LINK = shortenWithYeuMoney(TODAY_KEY)
+        warn("Key hôm nay:", TODAY_KEY)
+        warn("Link:", SHORT_LINK)
     end
 end
 
 -- Khởi tạo lần đầu
 updateKey(true)
 
--- Auto refresh key sau 00h mỗi ngày
+-- Auto refresh key mỗi 60s để bắt mốc 00h
 task.spawn(function()
     while task.wait(60) do
         updateKey(false)
